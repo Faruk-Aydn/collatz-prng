@@ -22,23 +22,23 @@ Algoritmanın çalışma mantığı aşağıdaki şemada detaylandırılmıştı
 
 ```mermaid
 graph TD
-    Start([Başlat]) --> Input[/Tohum Değeri (Seed) Al/]
+    Start([Başlat]) --> Input[/"Tohum Değeri (Seed) Al"/]
     Input --> Collatz{Collatz Döngüsü}
     
     subgraph "1. Aşama: Entropi Üretimi"
     Collatz -- "Çift Sayı" --> Even[n = n / 2]
     Collatz -- "Tek Sayı" --> Odd[n = 3n + 1]
-    Even --> Bit0[Bit Ekle: 0]
-    Odd --> Bit1[Bit Ekle: 1]
+    Even --> Bit0["Bit Ekle: 0"]
+    Odd --> Bit1["Bit Ekle: 1"]
     Bit0 --> CheckLen{Uzunluk Yeterli mi?}
     Bit1 --> CheckLen
     CheckLen -- Hayır --> Collatz
     end
 
-    CheckLen -- Evet --> NLFSR[2. Aşama: NLFSR Karıştırma]
-    NLFSR --> Hash[3. Aşama: SHA-256 Whitening]
-    Hash --> Output[/Sonuç: Random Bitstream/]
-    Output --> File[(Dosyaya Yaz: output.txt)]
+    CheckLen -- Evet --> NLFSR["2. Aşama: NLFSR Karıştırma"]
+    NLFSR --> Hash["3. Aşama: SHA-256 Whitening"]
+    Hash --> Output[/"Sonuç: Random Bitstream"/]
+    Output --> File[/"Dosyaya Yaz: output.txt"/]
     File --> End([Bitiş])
 
     style Start fill:#f9f,stroke:#333,stroke-width:2px
