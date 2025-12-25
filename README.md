@@ -51,6 +51,68 @@ graph TD
 
 ---
 
+## Algoritma Kaba Kodu (Pseudocode)
+
+Aşağıdaki kaba kod, PRNG'nin çalışma mantığını teknik olarak özetler:
+
+```text
+ALGORITHM Collatz_PRNG
+    INPUT: Seed, TotalBits
+    OUTPUT: RandomBitStream
+
+    // 1. AŞAMA: Collatz Entropi Toplama
+    bits = EMPTY_LIST
+    n = Seed
+    WHILE length(bits) < TotalBits:
+        // Parite ve non-linear işlem ile bit üret
+        bit = (n XOR (n >> 1) XOR (n >> 2)) AND 1
+        APPEND bit TO bits
+        
+        // Collatz Adımı
+        IF (n MOD 2) == 0:
+            n = n / 2
+        ELSE:
+            n = 3 * n + 1
+            
+        // Sayı patlamasını önle (Modülo)
+        n = (n MOD 1_000_000) + 1
+    END WHILE
+
+    // 2. AŞAMA: NLFSR Karıştırma (Mixing)
+    register = FIRST 32 BITS OF bits
+    mixed_bits = EMPTY_LIST
+    FOR EACH original_bit IN bits:
+        // Non-linear feedback fonksiyonu
+        feedback = (register[0] AND register[1]) XOR register[3] XOR register[31]
+        
+        // En sağdaki biti çıkışa al
+        APPEND register[31] TO mixed_bits
+        
+        // Register'ı kaydır ve feedback'i ekle
+        SHIFT register LEFT, INSERT feedback AT START
+    END FOR
+
+    // 3. AŞAMA: Hash Whitening (Beyazlatma)
+    final_output = EMPTY_LIST
+    counter = 0
+    data_bytes = CONVERT_TO_BYTES(mixed_bits)
+    
+    WHILE length(final_output) < TotalBits:
+        // Veriyi sayaçla birleştirip hash'le
+        hash_block = SHA256(data_bytes + counter)
+        
+        // Hash sonucundaki bitleri sonuca ekle
+        APPEND BITS_OF(hash_block) TO final_output
+        
+        counter = counter + 1
+    END WHILE
+
+    RETURN final_output
+END ALGORITHM
+```
+
+---
+
 ## Kurulum ve Kullanım
 
 Proje **Python 3** ile geliştirilmiştir. Çalıştırmak için aşağıdaki adımları izleyin:
